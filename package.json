@@ -1,0 +1,26 @@
+{
+
+  "homepage": "https://kowsalya280506.github.io/projectmanagement",
+  "name": "projectmanagement",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "npm --prefix task-manager-frontend run build",
+    "deploy": "gh-pages -d task-manager-frontend/build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "mongoose": "^9.11.3"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
