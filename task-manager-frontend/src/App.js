@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-const API = "http://localhost:5000/tasks";
+// Automatically switches between local server and production cloud backend
+const API = process.env.REACT_APP_API_URL || "http://localhost:5000/tasks";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -60,13 +60,9 @@ function App() {
 
   return (
     <div className="container py-5">
-      <h1 className="text-center mb-4">
-        Task Manager Dashboard
-      </h1>
+      <h1 className="text-center mb-4">Task Manager Dashboard</h1>
 
-      {error && (
-        <div className="alert alert-danger">{error}</div>
-      )}
+      {error && <div className="alert alert-danger">{error}</div>}
 
       <div className="input-group mb-4">
         <input
@@ -74,9 +70,7 @@ function App() {
           placeholder="Enter task title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) =>
-            e.key === "Enter" && addTask()
-          }
+          onKeyDown={(e) => e.key === "Enter" && addTask()}
         />
         <button className="btn btn-primary" onClick={addTask}>
           Add Task
@@ -101,15 +95,12 @@ function App() {
                   .map((task) => (
                     <div className="border rounded p-3 mb-3" key={task._id}>
                       <h6>{task.title}</h6>
-
                       <p>Status: {task.status}</p>
 
                       {status !== "Pending" && (
                         <button
                           className="btn btn-sm btn-secondary me-2 mb-2"
-                          onClick={() =>
-                            updateStatus(task._id, "Pending")
-                          }
+                          onClick={() => updateStatus(task._id, "Pending")}
                         >
                           Pending
                         </button>
@@ -118,9 +109,7 @@ function App() {
                       {status !== "Ongoing" && (
                         <button
                           className="btn btn-sm btn-info me-2 mb-2"
-                          onClick={() =>
-                            updateStatus(task._id, "Ongoing")
-                          }
+                          onClick={() => updateStatus(task._id, "Ongoing")}
                         >
                           Ongoing
                         </button>
@@ -129,9 +118,7 @@ function App() {
                       {status !== "Completed" && (
                         <button
                           className="btn btn-sm btn-success me-2 mb-2"
-                          onClick={() =>
-                            updateStatus(task._id, "Completed")
-                          }
+                          onClick={() => updateStatus(task._id, "Completed")}
                         >
                           Complete
                         </button>
