@@ -1,12 +1,25 @@
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config(); // Load environment variables
 
 const app = express();
 
+// Allow both local development and your GitHub Pages deployment
+const allowedOrigins = [
+    "https://kowsalya280506.github.io",
+    "http://localhost:3000"
+];
+
 app.use(cors({
-    origin: "https://kowsalya280506.github.io"
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like Postman or mobile apps)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error("Blocked by CORS"));
+        }
+    }
 }));
 
 app.use(express.json());
@@ -15,9 +28,7 @@ app.use(express.json());
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("MongoDB connected");
-
         const PORT = process.env.PORT || 5000;
-
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
@@ -29,10 +40,7 @@ mongoose.connect(process.env.MONGO_URI)
 // Task Schema
 const taskSchema = new mongoose.Schema(
     {
-        title: {
-            type: String,
-            required: true
-        },
+        title: { type: String, required: true },
         status: {
             type: String,
             enum: ["Pending", "Ongoing", "Completed"],
@@ -62,9 +70,7 @@ app.get("/tasks", async (req, res) => {
 // Add task
 app.post("/tasks", async (req, res) => {
     try {
-        const task = await Task.create({
-            title: req.body.title
-        });
+        const task = await Task.create({ title: req.body.title });
         res.status(201).json(task);
     } catch (err) {
         res.status(400).json({ message: "Could not create task" });
@@ -79,11 +85,7 @@ app.patch("/tasks/:id", async (req, res) => {
             { status: req.body.status },
             { new: true, runValidators: true }
         );
-
-        if (!task) {
-            return res.status(404).json({ message: "Task not found" });
-        }
-
+        if (!task) return res.status(404).json({ message: "Task not found" });
         res.json(task);
     } catch (err) {
         res.status(400).json({ message: "Could not update task" });
@@ -94,11 +96,7 @@ app.patch("/tasks/:id", async (req, res) => {
 app.delete("/tasks/:id", async (req, res) => {
     try {
         const task = await Task.findByIdAndDelete(req.params.id);
-
-        if (!task) {
-            return res.status(404).json({ message: "Task not found" });
-        }
-
+        if (!task) return res.status(404).json({ message: "Task not found" });
         res.json({ message: "Task deleted" });
     } catch (err) {
         res.status(400).json({ message: "Could not delete task" });
