@@ -8,6 +8,7 @@ const app = express();
 // Allow both local development and your GitHub Pages deployment
 const allowedOrigins = [
     "https://kowsalya280506.github.io",
+    "https://projectmanagement-frontend-s4h7.onrender.com",
     "http://localhost:3000"
 ];
 
